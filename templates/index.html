@@ -31,7 +31,9 @@ body {
 
 .top_menu {
   width: 100%;
-  background-color: #fff;
+  background-color: #FBAB7E;
+  background-image: linear-gradient(62deg, #FBAB7E 0%, #F7CE68 100%);
+
   padding: 20px 0 25px;
   box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
 }
@@ -39,7 +41,7 @@ body {
 .top_menu .button{
   width: 40px;
   height: 40px;
-  margin-left: 10px;
+  margin-left: 40px;
   border:none;
   float: left;
   background: url("../images/home3.png");
@@ -57,7 +59,7 @@ body {
 .top_menu .copybutton {
   width: 40px;
   height: 40px;
-  margin-right: 10px;
+  margin-right: 40px;
   float: right;
   background: url("../images/printer.png");
   background-size: cover;
@@ -125,9 +127,9 @@ body {
 }
 .messages .message.left .avatar {
   float: left;
-  width: 50px;
+  width: 60px;
   height: 50px;
-  background-image: url("../images/chatimage.png");
+  background-image: url("https://pas-wordpress-media.s3.amazonaws.com/wp-content/uploads/2013/08/Customer-service-woman-on-headset-gives-OK-1024x770.jpg");
   background-size: cover;
   border-radius: 50%;
   margin-right: 10px;
@@ -181,7 +183,7 @@ body {
   margin-top: -2px;
 }
 .messages .message .text_wrapper .text {
-  font-size: 25px;
+  font-size: 18px;
   font-weight: bold;
 }
 
@@ -216,9 +218,10 @@ body {
   height: 50px;
   display: inline-block;
   border-radius: 50px;
-  background-color: #FF8C00;
-  border: 2px solid #FF8C00;
-  color: #fff;
+  background-color: #FBAB7E;
+  background-image: linear-gradient(62deg, #FBAB7E 0%, #F7CE68 100%);
+  border: 1px solid #FF8C00;
+  color: white;
   cursor: pointer;
   transition: all 0.2s linear;
   text-align: center;
@@ -227,6 +230,7 @@ body {
 .bottom_wrapper .send_message:hover {
   color: #FF8C00;
   background-color: #fff;
+  background-image:none;
 }
 .bottom_wrapper .send_message .text {
   font-size: 18px;
@@ -236,20 +240,26 @@ body {
 }
 
 .done_button{
-  width:50px;
-  height: 30px;
-  border: 0;
-  outline: none;
-  font-size: 10px;
-  background: white;
+  width: calc(100%);
+  min-width: 100px;
+  height: calc(100%);
+  border:none;
+  font-size: 13px;
+  font-weight: bold;
+  padding : 10px 10px 10px 10px;
+  margin-top:5px;
+  margin-bottom:5px;
+  background-color: white;
   color: black;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
 .done_button:hover{
-  color: white;
-  background-color: black;
+  color: #FF8C00;
+  background-color: #fff;
+  border-color: #FF8C00;
+  border:none;
 }
 
  </style>
@@ -265,9 +275,10 @@ body {
 <div class="chat_window">
 
     <div class="top_menu">
-        <button class="button"></button>
-        <button class="copybutton"></button>
+        <img src="{{ url_for('static', filename='images/home3.png') }}" class="button">
+        <img src="{{ url_for('static', filename='images/printer.png') }}" class="copybutton">
         <div class="title">민원상담 챗봇 마음이</div>
+        
         
     </div>
     <!--메세지 창-->
@@ -288,21 +299,18 @@ body {
             <div class="icon"></div>
             <div class="text">전송하기</div>
         </div>
-        <!--
-        <button id="refreshBtn" class="btn btn-primary form-control" onclick="location.reload()">Refresh</button>
-        -->
     </div>
     
     <div class="message_template">
     <li class="message">
-        <div class="avatar"></div>
+        
         <div class="text_wrapper">
             <div class="text"></div>
         </div>
     </li>
-
     </div>
     
+
     </div>
 </div>
 
@@ -310,7 +318,36 @@ body {
 
 
 <script>
+
+// type_data 딕셔너리
+var type_data = [{
+    "1.생활지원" :{
+      "question1": "노인 목욕비 지원사업 지원 내용 알려주세요.",
+      "question2": "저소득층 노인을 위한 치아 관련 지원제도가 있나요?"
+    },
+    "2.주거지원" :{
+      "question1": "독거노인·장애인 응급안전안심서비스는 무엇인가요?",
+      "question2": "무료양로시설 신청 대상은 누구인가요?"
+    },
+    "3.건강의료" :{
+      "question1": "노인 틀니 지원 사업에 대해 알려주세요.",
+      "question2": "노인 무릎 인공관절수술 지원 대상 알려주세요."
+    },
+    "4.고용,일자리" :{
+      "question1": "노인일자리 사업 신청 방법 알려주세요.",
+      "question2": "노인일자리 사업 접수는 어디에 해야하나요?"
+    },
+    "5.돌봄" :{
+      "question1": "노인맞춤돌봄서비스의 서비스 대상을 자세히 알려주세요.",
+      "question2": "노인맞춤돌봄서비스에서 제공되는 서비스는 무엇인가요?"
+    }
     
+}];
+
+
+options = ["1.생활지원", "2.주거지원", "3.건강의료", "4.고용,일자리", "5.돌봄","6.기타"];
+var typearray=[];
+
     (function () {
     var Message;
     var count=0;
@@ -348,10 +385,15 @@ body {
     if (text.trim() === '') {
         return;
     }
+    else if(options.includes(text)){
+      console.log(text);
+      typearray.push(text);
+      
+    }
     $('.message_input').val('');
     $messages = $('.messages');
 
-    // Set message_side based on whether the message is from the user or chatbot
+    // 오른쪽에 위치
     var message_side = 'right';
 
     message = new Message({
@@ -361,61 +403,98 @@ body {
   
 
 
-// Draw user message
+// userMessage
     message.draw();
-
-    writingMessage = new Message({
-      text: '더 궁금하신 사항이 있으신가요?',
-      message_side: 'left' 
-  });
-
-    checkMessage = new Message({
-      text: '상담 전, 신원 확인을 위해 먼저 성함과 주민등록번호를 입력해주세요.',
-      message_side: 'left' 
-  });
-
-  donecheckMessage = new Message({
-    text: '이용해주셔서 감사합니다.', 
-    message_side: 'left' 
-});
-
   
-// Call getResponse() to get the chatbot's response
+
 $.get("/get", { msg: text }).done(function(data) {
     var botMessage = new Message({
         text: data,
         message_side: 'left'
     });
 
-    doneMessage = new Message({
-      text: data
-            +'<br><button id="done" class="done_button">종료</button>', 
+    var writingMessage = new Message({
+      text: '더 궁금하신 사항이 있으신가요? 추가 상담내용을 입력하지 않으면 1분 뒤 자동 종료됩니다.' +'<br><button id="done" class="done_button">종료</button>',
       message_side: 'left' 
     });
-    // Draw bot message
+
+
+    var exampleMessage = new Message({
+      text: data
+            +'<br><button id="qes1" class="done_button">질문1</button>'
+            +'<br><button id="qes2" class="done_button">질문2</button>',
+      message_side: 'left' 
+    });
+    
+    var checkMessage = new Message({
+      text: '상담 전, 신원 확인을 위해 먼저 성함과 주민등록번호를 입력해주세요. 예) 홍길동, 660101-2345678',
+      message_side: 'left' 
+  });
+
+  var donecheckMessage = new Message({
+    text: '이용해주셔서 감사합니다.', 
+    message_side: 'left' 
+  });
+    
+    
     count+=1;
-    if (count>2 && botMessage.text!="이용해주셔서 감사합니다."){
+    if (count>2 && botMessage.text!= "잘못된 정보입니다. 다시 입력해주세요." && botMessage.text!="이용해주셔서 감사합니다."){
       //writingMessage.draw();
-      doneMessage.draw();
+      //doneMessage.draw();
+      botMessage.draw();
+      writingMessage.draw();
+      setTimeout(function() {
+        alert("상담이 종료되었습니다");
+        location.reload();
+      }, 60000);
     }
     else if(count==1){
       botMessage.draw();
       checkMessage.draw();
     }
+    else if("신원확인 되었습니다. 궁금하신 사항을 구체적으로 말씀해주세요. "==botMessage.text){
+      for (var key in type_data[0]){
+        console.log(key);
+        if (typearray[0]==key){
+          $(function(){
+            $('#qes1').text(type_data[0][key]["question1"]);
+            $('#qes2').text(type_data[0][key]["question2"]);
+            $('#qes1').click(function (e) {
+              var messageText = $(this).text();
+              return sendMessage(messageText);
+            });
+            $('#qes2').click(function (e) {
+              var messageText = $(this).text();
+              return sendMessage(messageText);
+            });
+          });
+          exampleMessage.draw();
+          break;
+        }
+      }
+      
+      
+    }
     else{
       botMessage.draw();
+      writingMessage.draw();
     }
-   
+
     $('#done').click(function (e) {
       donecheckMessage.draw();
+      setTimeout(function() {
+        location.reload();
+      }, 3000)
+      
     });
-
-
     $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
+    
 });
 
 return $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
 };
+
+        
 
         $('.button').click(function (e) {
           location.reload();
@@ -453,18 +532,15 @@ return $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
         });
 
         });
-            // Add "Writing..." message
-     /*writingMessage = new Message({
-        text: '상담을 시작합니다. 0. 상담 종료, 1. 주거지원, 2.생활지원을 선택해주세요.',
-        message_side: 'left' 
-    });
-    writingMessage.draw(); */
+            
 
     });
 
     $(".copybutton").on("click", function(){
       // 캡쳐할 영역을 html2canvas로 캡쳐하여 canvas로 변환
-      html2canvas(document.querySelector("#capture")).then(canvas => {
+      const capture = document.querySelector("#capture")
+      capture.style.height = '3000px'
+      html2canvas(capture).then(canvas => {
 				saveImg(canvas.toDataURL('image/png'),"capture-test.png");
 			});
     });
