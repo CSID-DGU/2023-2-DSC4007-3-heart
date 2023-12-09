@@ -11,6 +11,10 @@
 |정보통신공학과|박희경|
 |통계학과|장세현|
 
+## Develop Tool
+Backend : Python
+Frontend : HTML5+CSS3+JQuery
+
 # ✨Result
 ## 민원 상담 항목 분류(첫페이지)
 <img src="https://github.com/CSID-DGU/2023-2-DSC4007-3-heart/assets/39753337/1201910c-3bee-4203-8f69-8e219e10d865"  width="300" height="400"/>
