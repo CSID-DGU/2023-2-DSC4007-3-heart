@@ -12,8 +12,8 @@
 |통계학과|장세현|
 
 ## Develop Tool
-Backend : Python
-Frontend : HTML5+CSS3+JQuery
+* Backend : Python<br>
+* Frontend : HTML5+CSS3+JQuery
 
 # ✨Result
 ## 민원 상담 항목 분류(첫페이지)
