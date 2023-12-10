@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <style>
 
 * {
@@ -54,6 +55,7 @@ body {
   color: #000000;
   font-size: 20px;
   font-weight: bold;
+  padding-top:8px;
 }
 
 .top_menu .copybutton {
@@ -483,9 +485,9 @@ $.get("/get", { msg: text }).done(function(data) {
       botMessage.draw();
       writingMessage.draw();
       setTimeout(function() {
-        alert("상담이 종료되었습니다");
         location.reload();
-      }, 30000);
+        swal("상담이 종료되었습니다.","이용해주셔서 감사합니다.","info");
+      }, 60000);
     }
     else if(count==1){
       botMessage.draw();
@@ -530,7 +532,7 @@ $.get("/get", { msg: text }).done(function(data) {
     }
 
     $('#done').click(function (e) {
-      donecheckMessage.draw();
+      swal("상담이 종료되었습니다.","이용해주셔서 감사합니다.","info");
       setTimeout(function() {
         location.reload();
       }, 3000)
@@ -546,7 +548,10 @@ return $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
         
 
         $('.button').click(function (e) {
-          location.reload();
+          swal("상담을 새로 시작합니다.","","");
+          setTimeout(function() {
+            location.reload();
+          }, 3000)
         });
 
         $('.send_message').click(function (e) {
@@ -556,7 +561,7 @@ return $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
             return sendMessage(getMessageText());
           }
           else{
-            window.alert("내용을 입력해주세요");
+            swal("내용을 입력해주세요","","error");
           }
         });
 
@@ -592,6 +597,7 @@ return $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
       html2canvas(capture).then(canvas => {
 				saveImg(canvas.toDataURL('image/png'),"capture-test.png");
 			});
+      swal("이미지가 저장되었습니다.","","success");
     });
 
     // 캡쳐된 파일을 저장하는 함수
